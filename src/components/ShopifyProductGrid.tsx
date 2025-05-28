@@ -98,7 +98,7 @@ export default function ShopifyProductGrid({
     );
   }
 
-  // Don't render if no products and not loading
+  // Don't render anything if no products and not loading
   if (!loading && products.length === 0) {
     return null;
   }
@@ -106,96 +106,72 @@ export default function ShopifyProductGrid({
   return (
     <div className={`bg-white py-16 ${className}`}>
       <div className="max-w-7xl mx-auto px-4">
-        <section>
-          {showTitle && (
-            <h2 className="text-3xl font-bold text-center text-[#1c1c22] mb-12 font-lato">
-              {title}
-            </h2>
-          )}
+        {showTitle && (
+          <h2 className="text-3xl font-bold text-center text-[#1c1c22] mb-12 font-lato">
+            {title}
+          </h2>
+        )}
 
-          {loading ? (
-            <div className="text-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-[#746cad] mx-auto mb-4" />
-              <p className="text-gray-500">Loading products from our store...</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-              {products.map((product) => (
-                <div key={product.id} className="group relative">
-                  <Link href={`/products/${product.handle || product.id}`}>
-                    <div className="aspect-square rounded-lg overflow-hidden bg-[#efeff0] mb-4 group-hover:scale-105 transition-transform cursor-pointer relative">
-                      <img
-                        src={product.image}
-                        alt={product.title}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          // Fallback to a placeholder if image fails to load
-                          e.currentTarget.src = "https://via.placeholder.com/300x300?text=Product+Image";
-                        }}
-                      />
-                      {/* Stock status indicator */}
-                      {!product.availableForSale && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                          <span className="text-white text-sm font-medium">Out of Stock</span>
-                        </div>
-                      )}
-                      {/* Quick Add Button */}
-                      {product.availableForSale && (
-                        <button
-                          onClick={(e) => handleQuickAdd(e, product)}
-                          className="absolute top-2 right-2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                          title="Quick Add to Cart"
-                        >
-                          <ShoppingCart className="h-4 w-4 text-[#746cad]" />
-                        </button>
+        {loading && products.length === 0 ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-[#746cad]" />
+            <span className="ml-2 text-[#747474] font-inter">Loading products...</span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {products.map((product) => (
+              <div key={product.id} className="group relative">
+                <Link href={`/products/${product.handle || product.id}`}>
+                  <div className="aspect-square rounded-lg overflow-hidden bg-[#efeff0] mb-4 group-hover:scale-105 transition-transform cursor-pointer relative">
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // Fallback to a placeholder if image fails to load
+                        e.currentTarget.src = "https://via.placeholder.com/300x300?text=Product+Image";
+                      }}
+                    />
+                    {/* Stock status indicator */}
+                    {!product.availableForSale && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <span className="text-white text-sm font-medium">Out of Stock</span>
+                      </div>
+                    )}
+                    {/* Quick Add Button */}
+                    {product.availableForSale && (
+                      <button
+                        onClick={(e) => handleQuickAdd(e, product)}
+                        className="absolute top-2 right-2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Quick Add to Cart"
+                      >
+                        <ShoppingCart className="h-4 w-4 text-[#746cad]" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs text-[#97979d] font-inter">{product.productType || 'Skincare'}</p>
+                    <h3 className="text-sm font-semibold text-[#1c1c22] font-inter leading-tight group-hover:text-[#746cad] transition-colors">
+                      {product.title}
+                    </h3>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-bold text-[#1c1c22] font-inter">${product.price}</p>
+                      {product.vendor && (
+                        <p className="text-xs text-[#97979d] font-inter">by {product.vendor}</p>
                       )}
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-xs text-[#97979d] font-inter">{product.productType || 'Skincare'}</p>
-                      <h3 className="text-sm font-semibold text-[#1c1c22] font-inter leading-tight group-hover:text-[#746cad] transition-colors">
-                        {product.title}
-                      </h3>
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-bold text-[#1c1c22] font-inter">${product.price}</p>
-                        {product.vendor && (
-                          <p className="text-xs text-[#97979d] font-inter">by {product.vendor}</p>
-                        )}
-                      </div>
-                      {/* Shopify badge */}
-                      <div className="flex items-center gap-1">
-                        <div className="h-1.5 w-1.5 bg-green-500 rounded-full"></div>
-                        <span className="text-xs text-green-600 font-inter">Available in store</span>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          )}
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
 
-          {/* Show error message if there's an error but we have some products */}
-          {error && products.length > 0 && (
-            <div className="text-center mt-8">
-              <p className="text-amber-600 text-sm">
-                Some products may not have loaded correctly
-              </p>
-            </div>
-          )}
-
-          {/* Call to action for Shopify products */}
-          {!loading && products.length > 0 && (
-            <div className="text-center mt-12">
-              <p className="text-[#747474] mb-4 max-w-2xl mx-auto font-inter">
-                Explore our full collection of premium skincare products available for purchase.
-              </p>
-              <Link href="/shop">
-                <Button className="bg-[#746cad] hover:bg-[#aca4e9] text-white px-8 py-3 rounded-lg font-medium">
-                  View All Products
-                </Button>
-              </Link>
-            </div>
-          )}
-        </section>
+        {error && products.length > 0 && (
+          <div className="text-center mt-8">
+            <p className="text-red-600 text-sm font-inter">{error}</p>
+          </div>
+        )}
       </div>
     </div>
   );
