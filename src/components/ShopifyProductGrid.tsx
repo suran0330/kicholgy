@@ -6,8 +6,6 @@ import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
 import { ShoppingCart, AlertCircle, Loader2 } from "lucide-react";
 import { getFeaturedProducts } from "@/lib/shopify/api";
-import { isShopifyConfigured } from "@/lib/shopify/client";
-import ShopifyNotConfigured from "./ShopifyNotConfigured";
 import type { ShopifyProductNormalized } from "@/types/shopify";
 
 interface ShopifyProductGridProps {
@@ -30,11 +28,8 @@ export default function ShopifyProductGrid({
 
   useEffect(() => {
     const fetchShopifyProducts = async () => {
-      if (!isShopifyConfigured()) {
-        setError("Shopify store not configured");
-        setLoading(false);
-        return;
-      }
+      // Skip configuration check - credentials are hardcoded
+      console.log('Fetching Shopify products...');
 
       try {
         setLoading(true);
@@ -87,21 +82,7 @@ export default function ShopifyProductGrid({
     addItem(cartProduct, 1);
   };
 
-  // Show configuration notice if Shopify is not configured
-  if (!isShopifyConfigured()) {
-    return (
-      <div className={`bg-white py-16 ${className}`}>
-        <div className="max-w-7xl mx-auto px-4">
-          {showTitle && (
-            <h2 className="text-3xl font-bold text-center text-[#1c1c22] mb-12 font-lato">
-              {title}
-            </h2>
-          )}
-          <ShopifyNotConfigured showTitle={false} />
-        </div>
-      </div>
-    );
-  }
+  // Configuration check removed - credentials are hardcoded
 
   // Don't render anything if there's an error and no products
   if (error && products.length === 0) {
